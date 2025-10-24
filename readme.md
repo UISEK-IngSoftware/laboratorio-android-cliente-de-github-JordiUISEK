@@ -1,8 +1,5 @@
 # Laboratorio Android. Cliente de GitHub
-- Año: 2025
-- Universidad: UISEK
-- Carera: Ingenieria en Software
-- Alumno: Jordi Sánchez Fernández
+
 ## Datos del estudiante
 **Nombre:** Jordi Sánchez Fernández
 **Carrera:** Ingenieria en Software
