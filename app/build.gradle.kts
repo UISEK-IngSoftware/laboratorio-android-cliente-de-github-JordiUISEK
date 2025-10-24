@@ -26,6 +26,12 @@ android {
             )
         }
     }
+
+    buildFeatures {
+        // Nos permite identificar los elementos con ID
+        viewBinding = true
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
