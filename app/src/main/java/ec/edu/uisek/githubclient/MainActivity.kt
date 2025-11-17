@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
     private fun showDeleteConfirmationDialog(repo: Repo) {
         AlertDialog.Builder(this)
             .setTitle("Eliminar repositorio")
-            .setMessage("¿Estás seguro de que deseas eliminar el repositorio \"${repo.name}\"? Esta acción no se puede deshacer.")
+            .setMessage("¿Estás seguro de que deseas eliminar el repositorio \"${repo.name}\"?\nEsta acción no se puede deshacer.")
             .setPositiveButton("Eliminar") { _, _ ->
                 deleteRepository(repo)
             }
