@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -39,8 +40,66 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setUpRecyclerView() {
-        reposAdapter = ReposAdapter()
+        reposAdapter = ReposAdapter(
+            onEditClick = { repo ->
+                displayEditRepoForm(repo)
+            },
+            onDeleteClick = { repo ->
+                showDeleteConfirmationDialog(repo)
+            }
+        )
         binding.reposRecyclerView.adapter = reposAdapter
+    }
+    
+    private fun displayEditRepoForm(repo: Repo) {
+        Intent(this, RepoEditForm::class.java).apply {
+            putExtra("REPO_NAME", repo.name)
+            putExtra("REPO_DESCRIPTION", repo.description ?: "")
+            putExtra("REPO_OWNER", repo.owner.login)
+            startActivity(this)
+        }
+    }
+    
+    private fun showDeleteConfirmationDialog(repo: Repo) {
+        AlertDialog.Builder(this)
+            .setTitle("Eliminar repositorio")
+            .setMessage("¿Estás seguro de que deseas eliminar el repositorio \"${repo.name}\"? Esta acción no se puede deshacer.")
+            .setPositiveButton("Eliminar") { _, _ ->
+                deleteRepository(repo)
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+    
+    private fun deleteRepository(repo: Repo) {
+        val apiService = RetrofitClient.gitHubApiService
+        val call = apiService.deleteRepository(repo.owner.login, repo.name)
+        
+        call.enqueue(object : Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                if (response.isSuccessful) {
+                    Log.d("MainActivity", "El repositorio ${repo.name} ha sido eliminado exitosamente")
+                    showMessage("El repositorio ${repo.name} ha sido eliminado exitosamente")
+                    // Refrescar la lista de repositorios
+                    fetchRepositories()
+                } else {
+                    val errMsg = when (response.code()) {
+                        401 -> "Error de autenticación"
+                        403 -> "Error de autorización"
+                        404 -> "Error de recurso no encontrado"
+                        else -> "Error desconocido: ${response.code()}: ${response.message()}"
+                    }
+                    Log.e("MainActivity", errMsg)
+                    showMessage(errMsg)
+                }
+            }
+
+            override fun onFailure(call: Call<Void>, t: Throwable) {
+                val errMsg = "Error de conexión: ${t.message}"
+                Log.e("MainActivity", errMsg, t)
+                showMessage(errMsg)
+            }
+        })
     }
 
     private fun fetchRepositories() {
