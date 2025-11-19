@@ -46,6 +46,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginEnd="8dp"
+                android:textColor="@color/edit_form"
                 style="?attr/materialButtonOutlinedStyle"
                 android:text="@string/cancel"/>
 
@@ -54,6 +55,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:backgroundTint="@color/edit_form"
                 android:text="@string/edit"/>
 
         </LinearLayout>
