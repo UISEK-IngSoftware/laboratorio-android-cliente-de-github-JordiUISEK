@@ -67,7 +67,7 @@ class RepoEditForm : AppCompatActivity() {
             description = repoDescription
         )
 
-        val apiService = RetrofitClient.gitHubApiService
+        val apiService = RetrofitClient.getApiService()
         val call = apiService.updateRepository(repoOwner, originalRepoName, repoRequest)
 
         call.enqueue(object : Callback<Repo> {
